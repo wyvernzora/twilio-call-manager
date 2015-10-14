@@ -1,0 +1,53 @@
+{
+  "name": "twilio-call-manager",
+  "version": "0.0.0",
+  "description": "Twilio call manager for Ignis.js",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/gulp coverage && ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jluchiji/twilio-call-manager.git"
+  },
+  "keywords": [
+    "twilio",
+    "ignisjs"
+  ],
+  "author": "Denis Luchkin-Zhou <denis@ricepo.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jluchiji/twilio-call-manager/issues"
+  },
+  "homepage": "https://github.com/jluchiji/twilio-call-manager#readme",
+  "devDependencies": {
+    "app-root-path": "^1.0.0",
+    "babel-eslint": "^4.1.3",
+    "chai": "^3.3.0",
+    "chai-as-promised": "^5.1.0",
+    "codeclimate-test-reporter": "^0.1.1",
+    "del": "^2.0.2",
+    "eslint": "^1.5.1",
+    "eslint-config-airbnb": "^0.1.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-changed": "^1.3.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-istanbul": "^0.10.1",
+    "gulp-istanbul-enforcer": "^1.0.3",
+    "gulp-mocha": "^2.1.3",
+    "gulp-notify": "^2.2.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "sinon": "^1.17.1",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "bluebird": "^2.10.2",
+    "chalk": "^1.1.1",
+    "debug": "^2.2.0",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "monologue.js": "^0.3.4",
+    "twilio": "^2.5.1"
+  }
+}

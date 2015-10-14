@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.js"],"names":[],"mappings":";;;;;;;;;;;;;uBAOwB,WAAW;;;;AAEnC,MAAM,CAAC,OAAO,uBAAc,CAAC","file":"index.js","sourcesContent":["/**\n * index.js\n *\n * @author  Denis Luchkin-Zhou <denis@ricepo.com>\n * @license MIT\n */\n\nimport CallManager from './manager';\n\nmodule.exports = CallManager;\n"],"sourceRoot":"/source/"}
