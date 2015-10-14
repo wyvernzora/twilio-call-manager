@@ -1,6 +1,6 @@
 {
   "name": "twilio-call-manager",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Twilio call manager for Ignis.js",
   "main": "lib/index.js",
   "scripts": {
