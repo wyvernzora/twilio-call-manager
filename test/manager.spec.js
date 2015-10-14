@@ -193,7 +193,7 @@ describe('getActivePhones(0)', function() {
 
   it('should add delayed calls to ignore list', function() {
     const mgr = new Manager(config);
-    mgr.calls['1231231234'] = { to: '1231231234', active: false, delay: Moment().subtract(2, 'seconds') };
+    mgr.calls['1231231234'] = { to: '1231231234', active: false, delay: Moment().subtract(2, 'hours') };
     mgr.calls['9879879876'] = { to: '9879879876', active: false, delay: Moment().add(2, 'hours')};
 
     const actual = mgr.getActivePhones();
