@@ -18,6 +18,14 @@ const debug = Debug('ignis:twilio:client');
 
 
 /*!
+ * Fake call object template.
+ */
+const fakeCall = {
+  sid: 'fake_call',
+  update: (i, f) => f()
+};
+
+/*!
  * Extended Twilio client with support for dry run.
  */
 export default class Client extends Twilio {
@@ -68,7 +76,7 @@ export default class Client extends Twilio {
     }
 
     debug(`${Chalk.bold.yellow('[dry-run]')} Skipping the call.`);
-    return Bluebird.resolve(null);
+    return Bluebird.resolve(fakeCall);
   }
 
 

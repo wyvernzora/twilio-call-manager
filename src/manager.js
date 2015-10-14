@@ -41,7 +41,7 @@ export default class CallManager extends Client {
     info.call = await this.call(number, params);
 
     /* Set a timeout to hang up the call */
-    if (info.call && this.config.timeout) {
+    if (info.call.sid !== 'fake_call' && this.config.timeout) {
       info.timeout = setTimeout(() => {
         this.update(info.call, { status: 'completed' });
       }, this.config.timeout * 1000);
@@ -68,7 +68,7 @@ export default class CallManager extends Client {
     }
 
     /* Ignore if reported SID does not match the one we are waiting for. */
-    if (info.call.sid !== params.CallSid) {
+    if (info.call && info.call.sid !== params.CallSid) {
       debug(`${Chalk.bold.red('ERROR   ')} Call SID mismatch: ${info.call.sid} vs ${params.CallSid}`);
       return;
     }
@@ -106,7 +106,7 @@ export default class CallManager extends Client {
     return _
       .chain(this.calls)
       .values()
-      .filter(call => call.active || Moment().isBefore(call.delay))
+      .filter(call => call.active || (call.delay && Moment().isBefore(call.delay)))
       .pluck('to')
       .value();
   }
