@@ -10,7 +10,7 @@ import OS          from 'os';
 import URL         from 'url';
 import Chalk       from 'chalk';
 import Debug       from 'debug';
-import Twilio      from 'twilio/lib/Client';
+import Twilio      from 'twilio';
 import Bluebird    from 'bluebird';
 import Monologue   from 'monologue.js';
 
@@ -28,10 +28,10 @@ const fakeCall = {
 /*!
  * Extended Twilio client with support for dry run.
  */
-export default class Client extends Twilio {
+export default class Client {
 
   constructor(cfg) {
-    super(cfg.sid, cfg.token, cfg.apiHost, cfg.version, cfg.timeout);
+    this.__native = Twilio(cfg.sid, cfg.token);
 
     /* Hostname for URL resolution */
     this.host = process.env.HOSTNAME || cfg.hostname || 'http://' + OS.hostname();
@@ -64,15 +64,18 @@ export default class Client extends Twilio {
     /* Initialize default values */
     _.defaults(params, this.config.call);
 
+
     /* Resolve relative URIs */
     params.statusCallback = params.statusCallback ?
       URL.resolve(this.host, params.statusCallback) : '';
     params.url = URL.resolve(this.host, params.url);
 
+
     /* Make the call if we actually have destination numbers */
     if (_.isArray(params.to)) { params.to = params.to[0]; }
-    if (params.to && typeof params.to === 'string') {
-      return Bluebird.fromNode(done => this.makeCall(params, done));
+    if (params.to && typeof params.to !== 'boolean') {
+      debug(`${Chalk.bold.yellow('[calling]')} ${params.to}`);
+      return Bluebird.resolve(this.__native.makeCall(params));
     }
 
     debug(`${Chalk.bold.yellow('[dry-run]')} Skipping the call.`);
@@ -97,7 +100,7 @@ export default class Client extends Twilio {
       .flatten()
       .compact()
       .map(phone => _.assign({ to: phone }, template))
-      .map(data => Bluebird.fromNode(done => this.sendSms(data, done)))
+      .map(data => Bluebird.resolve(this.__native.sendMessage(data)))
       .value();
 
     return Bluebird.all(promises);
@@ -108,7 +111,7 @@ export default class Client extends Twilio {
    * Gets a call's data.
    */
   async find(sid) {
-    const call = await this.calls(sid).get();
+    const call = await this.__native.calls(sid).get();
     return call;
   }
 

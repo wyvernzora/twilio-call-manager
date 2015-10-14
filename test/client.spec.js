@@ -66,12 +66,12 @@ describe('call(2)', function() {
     const client = new Client(config);
     const params = { foo: 'bar', url: '/status' };
 
-    client.makeCall = Sinon.spy((args, done) => done());
+    client.__native.makeCall = Sinon.spy(function() { });
     const promise = client.call('1231231234', params);
 
     return promise.then(() => {
-      expect(client.makeCall).to.be.calledOnce;
-      const args = client.makeCall.firstCall.args[0];
+      expect(client.__native.makeCall).to.be.calledOnce;
+      const args = client.__native.makeCall.firstCall.args[0];
       expect(args.to).to.equal('1231231234');
       expect(args.foo).to.equal('bar');
     });
@@ -81,12 +81,12 @@ describe('call(2)', function() {
     const client = new Client(_.assign({ }, config, { dry: '9879879876' }));
     const params = { foo: 'bar', url: '/status', statusCallback: '/status' };
 
-    client.makeCall = Sinon.spy((args, done) => done());
+    client.__native.makeCall = Sinon.spy(function() { });
     const promise = client.call('1231231234', params);
 
     return promise.then(() => {
-      expect(client.makeCall).to.be.calledOnce;
-      const args = client.makeCall.firstCall.args[0];
+      expect(client.__native.makeCall).to.be.calledOnce;
+      const args = client.__native.makeCall.firstCall.args[0];
       expect(args.to).to.equal('9879879876');
       expect(args.foo).to.equal('bar');
       expect(args.statusCallback).to.match(/status$/);
@@ -97,12 +97,12 @@ describe('call(2)', function() {
     const client = new Client(_.assign({ }, config, { dry: ['9879879876', '7657657654' ] }));
     const params = { foo: 'bar', url: '/status', statusCallback: '/status' };
 
-    client.makeCall = Sinon.spy((args, done) => done());
+    client.__native.makeCall = Sinon.spy(function() { });
     const promise = client.call('1231231234', params);
 
     return promise.then(() => {
-      expect(client.makeCall).to.be.calledOnce;
-      const args = client.makeCall.firstCall.args[0];
+      expect(client.__native.makeCall).to.be.calledOnce;
+      const args = client.__native.makeCall.firstCall.args[0];
       expect(args.to).to.equal('9879879876');
       expect(args.foo).to.equal('bar');
     });
@@ -112,11 +112,11 @@ describe('call(2)', function() {
     const client = new Client(_.assign({ }, config, { dry: true }));
     const params = { foo: 'bar', url: '/status', statusCallback: '/status' };
 
-    client.makeCall = Sinon.spy((args, done) => done());
+    client.__native.makeCall = Sinon.spy(function() { });
     const promise = client.call('1231231234', params);
 
     return promise.then(() => {
-      expect(client.makeCall).to.have.callCount(0);
+      expect(client.__native.makeCall).to.have.callCount(0);
     });
   });
 
@@ -124,7 +124,7 @@ describe('call(2)', function() {
     const client = new Client(config);
     const params = { foo: 'bar', url: '/status', statusCallback: '/status' };
 
-    client.makeCall = Sinon.spy((args, done) => done(new Error('Test error')));
+    client.__native.makeCall = Sinon.spy(() => Bluebird.reject(new Error('Test error')));
     const promise = client.call('1231231234', params);
 
     expect(promise).to.rejectedWith('Test error');
@@ -139,13 +139,13 @@ describe('text(2)', function() {
     const client = new Client(config);
     const params = { };
 
-    client.sendSms = Sinon.spy((data, done) => done());
+    client.__native.sendMessage = Sinon.spy(function() { });
     const promise = client.text([ '1231231234', '9879879876' ], params);
 
     return promise.then(() => {
-      expect(client.sendSms).to.be.calledTwice;
-      expect(client.sendSms.firstCall.args[0]).to.have.property('to', '1231231234');
-      expect(client.sendSms.secondCall.args[0]).to.have.property('to', '9879879876');
+      expect(client.__native.sendMessage).to.be.calledTwice;
+      expect(client.__native.sendMessage.firstCall.args[0]).to.have.property('to', '1231231234');
+      expect(client.__native.sendMessage.secondCall.args[0]).to.have.property('to', '9879879876');
     });
   });
 
@@ -153,13 +153,13 @@ describe('text(2)', function() {
     const client = new Client(_.assign({ }, config, { dry: ['9879876789', '7657657654' ] }));
     const params = { };
 
-    client.sendSms = Sinon.spy((data, done) => done());
+    client.__native.sendMessage = Sinon.spy(function() { });
     const promise = client.text([ '1231231234', '9879879876' ], params);
 
     return promise.then(() => {
-      expect(client.sendSms).to.be.calledTwice;
-      expect(client.sendSms.firstCall.args[0]).to.have.property('to', '9879876789');
-      expect(client.sendSms.secondCall.args[0]).to.have.property('to', '7657657654');
+      expect(client.__native.sendMessage).to.be.calledTwice;
+      expect(client.__native.sendMessage.firstCall.args[0]).to.have.property('to', '9879876789');
+      expect(client.__native.sendMessage.secondCall.args[0]).to.have.property('to', '7657657654');
     });
   });
 
@@ -167,7 +167,7 @@ describe('text(2)', function() {
     const client = new Client(config);
     const params = { };
 
-    client.sendSms = Sinon.spy((data, done) => done(new Error('Test error')));
+    client.__native.sendMessage = Sinon.spy(() => Bluebird.reject(new Error('Test error')));
     const promise = client.text([ '1231231234', '9879879876' ], params);
 
     expect(promise).to.rejectedWith('Test error');
@@ -182,14 +182,14 @@ describe('find(1)', function() {
     const client = new Client(config);
 
     const call = { get: Sinon.spy(() => Bluebird.resolve('bar')) };
-    client.calls = Sinon.spy(() => call);
+    client.__native.calls = Sinon.spy(() => call);
 
     const promise = client.find('foo');
 
     return promise.then(result => {
       expect(result).to.equal('bar');
       expect(call.get).to.be.calledOnce;
-      expect(client.calls).to.be.calledOnce.and.to.be.calledWith('foo');
+      expect(client.__native.calls).to.be.calledOnce.and.to.be.calledWith('foo');
     });
   });
 
